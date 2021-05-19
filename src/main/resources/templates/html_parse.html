@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" rel="stylesheet">
+
+    <title>Hello, world!</title>
+</head>
+<body>
+<div class="container">
+    <h1>Hello, world!</h1>
+    <form name="test">
+        <div class="mb-3">
+            <label class="form-label" for="formGroupExampleInput">URL</label>
+            <input class="form-control" name="url" placeholder="https://google.com/" type="text">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="formGroupExampleInput">TYPE</label>
+            <div class="form-check">
+                <input checked class="form-check-input" id="flexRadioDefault1" name="type" type="radio" value="removeHtmlTag">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    HTML 태그 제외
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" id="flexRadioDefault2" name="type" type="radio" value="text">
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Text 전체
+                </label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="exampleFormControlInput1">출력 묶음 단위</label>
+            <input class="form-control" id="exampleFormControlInput1" name="groupCount" placeholder="숫자 입력" type="number">
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-primary" id="process_btn" type="submit">출력</button>
+        </div>
+    </form>
+
+    <div class="mb-3">
+        <label class="form-label" for="exampleFormControlTextarea1">몫</label>
+        <textarea class="form-control" id="quotient" rows="10"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="exampleFormControlTextarea1">나머지</label>
+        <textarea class="form-control" id="remainder" rows="10"></textarea>
+    </div>
+</div>
+
+<script crossorigin="anonymous" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const form = document.forms.test;
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = [...formData.entries()];
+        const asString = data
+            .map(x => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
+            .join('&');
+        console.log(asString);
+
+        fetch('/api/process?' + asString)
+            .then(res => res.json())
+            .then(res => {
+                const quotient =  document.getElementById('quotient')
+                const remainder =  document.getElementById('remainder')
+                quotient.value = res.quotient
+                remainder.value = res.remainder
+            })
+        .catch(err => console.log(error))
+    }
+
+    form.addEventListener('submit', handleSubmit);
+
+</script>
+</body>
+</html>
